@@ -1,0 +1,8 @@
+# The following tests are excluded by default.
+OVSDB cluster - txn on leader, leader crash after sending appendReq, follower-2 becomes leader
+OVSDB cluster - txn on leader, leader crash after sending appendReq, follower-3 becomes leader
+OVSDB cluster - txn on follower-2, follower-2 crash after sending execReq, reconnect to follower-3
+OVSDB cluster - txn on follower-2, follower-2 crash after sending execReq, reconnect to leader
+OVSDB 3-server torture test - remove/re-add leader
+OVSDB 5-server torture test - remove/re-add leader
+

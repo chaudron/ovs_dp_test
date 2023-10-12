@@ -1,0 +1,7 @@
+# Skipped due to test/feature not being available in the kernel datapath
+conntrack - FTP with expectation dump
+conntrack - IPv4 fragmentation overlapping fragments by 1 octet
+conntrack - IPv4 fragmentation overlapping fragments by 1 octet out of order
+conntrack - get_nconns and get/set_maxconns
+datapath - ping over srv6 tunnel
+datapath - ping6 over srv6 tunnel

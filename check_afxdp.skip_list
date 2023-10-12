@@ -1,0 +1,35 @@
+# Skipped due to test/feature not being available in the af_xdp datapath
+datapath - ping between two ports on cvlan
+datapath - ping6 between two ports on cvlan
+conntrack - multiple namespaces, internal ports
+conntrack - IPv4 fragmentation + cvlan
+conntrack - IPv6 fragmentation + cvlan
+conntrack - Fragmentation over vxlan
+conntrack - IPv6 Fragmentation over vxlan
+conntrack - fragment reassembly with L3 L4 protocol information
+conntrack - multiple zones, local
+conntrack - multi-stage pipeline, local
+802.1ad - vlan_limit
+802.1ad - push/pop outer 802.1ad
+802.1ad - push/pop outer 802.1q
+802.1ad - 802.1q tunnel
+802.1ad - double vlan match
+
+# Valid skippes due to OVS_CHECK_KERNEL_EXCL and OVS_CHECK_MIN_KERNEL MACROs
+datapath - ping over gre tunnel
+datapath - ping over ip6gre L2 tunnel
+datapath - ping over erspan v1 tunnel
+datapath - ping over erspan v2 tunnel
+datapath - ping over ip6erspan v1 tunnel
+datapath - ping over ip6erspan v2 tunnel
+datapath - ping over gre tunnel by simulated packets
+datapath - ping over erspan v1 tunnel by simulated packets
+datapath - ping over erspan v2 tunnel by simulated packets
+datapath - ping over ip6erspan v1 tunnel by simulated packets
+datapath - ping over ip6erspan v2 tunnel by simulated packets
+datapath - truncate and output to gre tunnel by simulated packets
+datapath - truncate and output to gre tunnel
+datapath - configure cache size
+
+# Valid skipped due to CHECK_CONNTRACK_LOCAL_STACK() macro
+conntrack - can match and clear ct_state from outside OVS

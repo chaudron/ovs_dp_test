@@ -1,0 +1,33 @@
+# System traffic tests skipped due to not being supported by TC.
+conntrack - FTP
+conntrack - FTP SNAT orig tuple 
+conntrack - FTP SNAT orig tuple seqadj
+conntrack - FTP SNAT postrecirc 
+conntrack - FTP SNAT postrecirc seqadj
+conntrack - FTP SNAT prerecirc 
+conntrack - FTP SNAT prerecirc seqadj
+conntrack - FTP over IPv6
+conntrack - FTP with expectation dump
+conntrack - FTP with multiple expectations
+conntrack - Fragmentation over vxlan
+conntrack - IPv4 FTP Active with DNAT
+conntrack - IPv4 FTP Active with DNAT with reverse skew
+conntrack - IPv4 FTP Passive with DNAT
+conntrack - IPv4 FTP Passive with DNAT 2
+conntrack - IPv4 FTP Passive with SNAT
+conntrack - IPv4 TFTP with SNAT
+conntrack - IPv4 fragmentation + cvlan
+conntrack - IPv4 fragmentation overlapping fragments by 1 octet
+conntrack - IPv4 fragmentation overlapping fragments by 1 octet out of order
+conntrack - IPv6 FTP Passive
+conntrack - IPv6 FTP Passive with SNAT
+conntrack - IPv6 FTP with SNAT
+conntrack - IPv6 FTP with SNAT - orig tuple
+conntrack - TFTP
+conntrack - get_nconns and get/set_maxconns
+conntrack - multiple namespaces, internal ports
+conntrack - zone-based timeout policy
+datapath - ping over srv6 tunnel
+datapath - ping6 over srv6 tunnel
+datapath - truncate and output to gre tunnel
+datapath - truncate and output to gre tunnel by simulated packets

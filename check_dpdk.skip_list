@@ -1,0 +1,12 @@
+# Skiped due to missing DPDK NIC in VM environment.
+OVS-DPDK - add standard DPDK port
+OVS-DPDK - Ingress policing create delete phy port
+OVS-DPDK - QoS create delete phy port
+OVS-DPDK - MTU increase phy port
+OVS-DPDK - MTU decrease phy port
+OVS-DPDK - MTU upper bound phy port
+OVS-DPDK - MTU lower bound phy port
+
+# Skiped if AVX512 support is missing.
+OVS-DPDK - MFEX Autovalidator
+OVS-DPDK - MFEX Autovalidator Fuzzy
