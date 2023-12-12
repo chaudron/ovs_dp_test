@@ -33,6 +33,7 @@ datapath - ping over vxlan6 tunnel
 datapath - ping vlan over vxlan tunnel
 datapath - ping6 over srv6 tunnel
 datapath - slow_action on geneve6 tunnel
+datapath - bridging two geneve tunnels
 
 # Valid skippes due to OVS_CHECK_KERNEL_EXCL and OVS_CHECK_MIN_KERNEL MACROs
 datapath - configure cache size
