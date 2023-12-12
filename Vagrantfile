@@ -130,7 +130,7 @@ $build_dpdk = <<END
   mkdir -p $DPDK_BUILD
   cd /vagrant/dpdk
   CC=gcc meson -Dtests=false -Dmachine=default \
-    -Denable_drivers=net/null,net/tap,net/virtio,net/pcap \
+    -Denable_drivers=net/null,net/tap,net/virtio,net/pcap,net/af_xdp \
     -Ddeveloper_mode=disabled --prefix="$DPDK_BUILD/install" "$DPDK_BUILD" \
     2>&1 | tee BUIKD_dpdk_meson
 
