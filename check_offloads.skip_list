@@ -31,3 +31,6 @@ datapath - ping over srv6 tunnel
 datapath - ping6 over srv6 tunnel
 datapath - truncate and output to gre tunnel
 datapath - truncate and output to gre tunnel by simulated packets
+
+# Skipped as it needs a minimal 6.7 kernel
+conntrack - ICMP related with SNAT

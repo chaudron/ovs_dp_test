@@ -55,3 +55,6 @@ conntrack - multi-stage pipeline, local
 
 # Valid skipped due to CHECK_L3L4_CONNTRACK_REASM() macro
 conntrack - fragment reassembly with L3 L4 protocol information
+
+# Skipped as it needs a minimal 6.7 kernel
+conntrack - ICMP related with SNAT

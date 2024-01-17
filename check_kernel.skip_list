@@ -5,3 +5,6 @@ conntrack - IPv4 fragmentation overlapping fragments by 1 octet out of order
 conntrack - get_nconns and get/set_maxconns
 datapath - ping over srv6 tunnel
 datapath - ping6 over srv6 tunnel
+
+# Skipped as it needs a minimal 6.7 kernel
+conntrack - ICMP related with SNAT
