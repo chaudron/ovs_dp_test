@@ -1,5 +1,6 @@
 # System traffic tests skipped due to not being supported by TC.
 conntrack - FTP
+conntrack - FTP non-standard port
 conntrack - FTP SNAT orig tuple 
 conntrack - FTP SNAT orig tuple seqadj
 conntrack - FTP SNAT postrecirc 
