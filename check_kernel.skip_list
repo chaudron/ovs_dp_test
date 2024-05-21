@@ -8,3 +8,6 @@ datapath - ping6 over srv6 tunnel
 
 # Skipped as it needs a minimal 6.7 kernel
 conntrack - ICMP related with SNAT
+
+# [NEEDS FIXING] Skipped as it needs the latest kernel.
+datapath - drop action

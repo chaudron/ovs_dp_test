@@ -33,3 +33,6 @@ datapath - configure cache size
 
 # Valid skipped due to CHECK_CONNTRACK_LOCAL_STACK() macro
 conntrack - can match and clear ct_state from outside OVS
+
+# Skipped as it needs a minimal 6.7 kernel
+conntrack - ICMP related with SNAT
