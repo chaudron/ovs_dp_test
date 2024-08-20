@@ -39,3 +39,11 @@ conntrack - ICMP related with SNAT
 # [NEEDS FIXING] Skipped as it needs the latest kernel.
 offloads - re-probe drop action
 datapath - drop action
+
+# Skipped for now, as we do not have a kernel with psample support yet.
+psample - sanity check
+psample - sanity check IPv6
+psample - slow
+psample - slow with probability
+psample - with IPFIX
+psample - from ct label
