@@ -149,7 +149,7 @@ $build_ovs = <<END
   mkdir -p ~/ovs_build
   cd ~/ovs_build
   PKG_CONFIG_PATH=$DPDK_BUILD/install/lib64/pkgconfig:$DPDK_BUILD/install/lib/x86_64-linux-gnu/pkgconfig \
-  CFLAGS="-g -O2 -msse4.2 -mpopcnt $EXTRA_CFLAGS" \
+  CFLAGS="-g -O2 $EXTRA_CFLAGS" \
     /vagrant/ovs/configure \
       --enable-afxdp \
       --enable-Werror \
