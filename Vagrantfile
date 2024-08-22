@@ -255,9 +255,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Provider specific configuration
   #
   config.vm.provider :libvirt do |libvirt|
-    libvirt.cpus = VM_CPUS
-    libvirt.memory = 4096
+    # ARM specific additions
+    libvirt.cpu_mode = "host-passthrough"
+    libvirt.machine_arch = "aarch64"
+    libvirt.machine_type = "virt"
+    libvirt.loader = "/usr/share/AAVMF/AAVMF_CODE.fd"
+    libvirt.nvram = ""
     libvirt.machine_virtual_size = 40
+
+    libvirt.input :type => "mouse", :bus => "usb"
+    libvirt.input :type => "keyboard", :bus => "usb"
+    libvirt.usb_controller :model => "qemu-xhci"
   end
 
   config.vm.synced_folder "./dpdk", "/vagrant/dpdk", type: "sshfs"
@@ -276,6 +284,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_ubuntu, env: {"RESULT_DIR" => VM_NAME}
     else
       ovs_vm.vm.box = "fedora/41-cloud-base"
+      ovs_vm.vm.box_url = "https://dl.fedoraproject.org/pub/fedora/linux/releases/41/Cloud/aarch64/images/Fedora-Cloud-Base-Vagrant-libvirt-41-1.4.aarch64.vagrant.libvirt.box"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_fedora, env: {"RESULT_DIR" => VM_NAME}
     end
 

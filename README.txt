@@ -1,3 +1,10 @@
+ARM notes:
+
+'vagrant destroy' might not work due to NVRAM assignment. First manually
+delete the VM with 'virsh undefine --nvram ovs_dp_test_fedora'.
+
+------------------------------------------------------------------------------
+
 This is a simple vagrant configuration that can be controlled through a Python
 script to run all the possible Open vSwitch (OVS) test cases.
 
