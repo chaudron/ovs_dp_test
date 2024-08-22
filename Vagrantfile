@@ -240,6 +240,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :libvirt do |libvirt|
     libvirt.cpus = VM_CPUS
     libvirt.memory = 4096
+
+    # ARM specific additions
+    libvirt.cpu_mode = "host-passthrough"
+    libvirt.machine_arch = "aarch64"
+    libvirt.machine_type = "virt"
+    libvirt.loader = "/usr/share/AAVMF/AAVMF_CODE.fd"
+    libvirt.nvram = ""
+
+    libvirt.input :type => "mouse", :bus => "usb"
+    libvirt.input :type => "keyboard", :bus => "usb"
+    libvirt.usb_controller :model => "qemu-xhci"
   end
 
   config.vm.provider "virtualbox" do |vb|
@@ -262,7 +273,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ovs_vm.vm.box = "generic/ubuntu2204"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_ubuntu, env: {"RESULT_DIR" => VM_NAME}
     else
-      ovs_vm.vm.box = "generic/fedora37"
+      ovs_vm.vm.box = "generic-a64/fedora39"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_fedora, env: {"RESULT_DIR" => VM_NAME}
     end
 
