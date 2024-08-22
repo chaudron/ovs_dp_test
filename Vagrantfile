@@ -64,7 +64,9 @@ $provision_fedora = <<END
 
   mkdir -p /vagrant/results/$RESULT_DIR
 
-  rpm -U --replacepkgs --nodeps --oldpackage /vagrant/rpms/*.rpm
+  if ls /vagrant/rpms/*.rpm &> /dev/null; then
+      rpm -U --replacepkgs --nodeps --oldpackage /vagrant/rpms/*.rpm
+  fi
 END
 
 $provision_ubuntu = <<END
