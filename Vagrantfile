@@ -145,7 +145,7 @@ $build_ovs = <<END
   cd /vagrant/ovs
 
   # FIX VLOG() truncation issue for DPDK.
-  sed -i 's/ setbuf(log_stream, NULL);/ \/\/setbuf(log_stream, NULL);/' lib/dpdk.c
+  sed -i 's| setbuf(log_stream, NULL);| //setbuf(log_stream, NULL);|' lib/dpdk.c
 
   ./boot.sh
   [ -f Makefile ] && ./configure && make distclean
