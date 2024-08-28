@@ -148,7 +148,7 @@ $build_ovs = <<END
   sed -i 's| setbuf(log_stream, NULL);| //setbuf(log_stream, NULL);|' lib/dpdk.c
 
   # FIX log message from DPDK.
-  sed -i 's|$1";/does not exist. The Open vSwitch kernel module is probably not loaded./d|$1";/EAL: eal_memalloc_alloc_seg_bulk(): couldn'"'"'t find suitable memseg_list/d\n/does not exist. The Open vSwitch kernel module is probably not loaded./d|' tests/system-dpdk-macros.at
+  sed -i 's|$1";/does not exist. The Open vSwitch kernel module is probably not loaded./d|$1";/EAL: eal_memalloc_alloc_seg_bulk(): couldn'"'"'t find suitable memseg_list/d\\n/does not exist. The Open vSwitch kernel module is probably not loaded./d|' tests/system-dpdk-macros.at
 
   ./boot.sh
   [ -f Makefile ] && ./configure && make distclean
