@@ -35,7 +35,6 @@ $provision_fedora = <<END
     libpcap-devel \
     libcap-ng \
     libcap-ng-devel \
-    libreswan \
     libtool \
     libibverbs-devel \
     libxdp \
@@ -60,6 +59,9 @@ $provision_fedora = <<END
     unbound-devel \
     which \
     wget
+
+#  Removed libreswan for now as IPSec tests are crashing the ARM kernel.
+#    libreswan \
 
   pip install \
      pyftpdlib
