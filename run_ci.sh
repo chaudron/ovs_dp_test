@@ -12,7 +12,7 @@ set -e
 # What to do on error...
 on_error() {
 echo "***** Send email with failure"
-(echo "Subject: FAILED ARM64 OVS datapath run." && \
+(echo -e "Subject: FAILED ARM64 OVS datapath run.\n\n" && \
   tail -n 50 "$LOG_FILE") | \
   msmtp --host=$SMTP -f $EMAIL $EMAIL
 }
@@ -51,6 +51,7 @@ python3 -m pip install --ignore-installed rich
 
 echo "***** Kill the existing VM"
 virsh undefine --nvram ovs_dp_test_fedora || true
+vagrant destroy -f || true
 
 
 echo "***** Run Datapath tests"
@@ -62,6 +63,6 @@ deactivate
 
 
 echo "***** Send email with results"
-(echo "Subject: Successful ARM64 OVS datapath run." && \
+(echo -e "Subject: Successful ARM64 OVS datapath run.\n\n" && \
   tail -n 10 "$LOG_FILE") | \
   msmtp --host=$SMTP -f $EMAIL $EMAIL
