@@ -5,5 +5,5 @@ daemon --service
 bfd - bfd decay
 dpif-netdev - MFEX Autovalidator
 dpif-netdev - MFEX Autovalidator Fuzzy
-Check Python IDL connects to leader - Python3
-Check Python IDL reconnects to leader - Python3
+Check Python IDL connects to leader - Python3 (leader only)
+Check Python IDL reconnects to leader - Python3 (leader only)

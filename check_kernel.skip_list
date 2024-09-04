@@ -24,8 +24,12 @@ psample - from ct label
 conntrack - zone-based timeout policy
 
 # For ARM IPsec is disabled for now, as it crashes the kernel :(
-IPsec -- Libreswan (ipv4, geneve, defaultroute, psk)
-IPsec -- Libreswan (ipv4, geneve, localip, psk)
 IPsec -- Libreswan (ipv4, geneve, defaultroute
+IPsec -- Libreswan (ipv4, geneve, defaultroute, ca-signed)
+IPsec -- Libreswan (ipv4, geneve, defaultroute, psk)
+IPsec -- Libreswan (ipv4, geneve, defaultroute, self-signed)
+IPsec -- Libreswan (ipv4, geneve, localip, psk)
 IPsec -- Libreswan (ipv4, vxlan, defaultroute, psk)
+IPsec -- Libreswan (ipv6, geneve, defaultroute, psk)
+IPsec -- Libreswan (ipv6, vxlan, defaultroute, psk)
 IPsec -- Libreswan (ipv6, vxlan, localip, psk)
