@@ -1,6 +1,9 @@
+ci_run.log
 *~
 \#*#
+
 .vagrant/
 dpdk/
 ovs/
+ovs_dp-venv/
 results/
