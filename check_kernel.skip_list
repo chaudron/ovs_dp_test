@@ -12,3 +12,13 @@ datapath - tcp over gre tunnel with software fallback
 
 # Skip as Fedora 41 still has Libreswan v4
 IPsec -- Libreswan NxN geneve tunnels + reconciliation
+
+# NF_CONNTRACK_TIMEOUT not set on ARM64 Fedora builds.
+conntrack - zone-based timeout policy
+
+# For ARM IPsec is disabled for now, as it crashes the kernel :(
+IPsec -- Libreswan (ipv4, geneve, defaultroute, psk)
+IPsec -- Libreswan (ipv4, geneve, localip, psk)
+IPsec -- Libreswan (ipv4, geneve, defaultroute
+IPsec -- Libreswan (ipv4, vxlan, defaultroute, psk)
+IPsec -- Libreswan (ipv6, vxlan, localip, psk)
