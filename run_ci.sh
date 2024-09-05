@@ -23,6 +23,20 @@ trap 'on_error' ERR
 exec > "$LOG_FILE" 2>&1
 
 
+echo "***** Make sure OVN CI is not running"
+retry=0
+while systemctl is-active --quiet ovn-ci; do
+    echo "----- Waiting for ovn-ci to stop..."
+    sleep 300
+
+    retry=$((retry+1))
+    if [ $retry -ge 48 ]; then
+        echo "ERROR: Failed waiting for ovn-ci for 4 hours!"
+        false # Simulate failure and execute 'trap err'
+    fi
+done
+
+
 echo "***** Delete previous checkout / build"
 rm -rf "$OVS_DIR" "$DPDK_DIR"
 
