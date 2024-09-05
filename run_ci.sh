@@ -3,21 +3,27 @@
 
 SMTP="<SMTP_SERVER>"
 EMAIL="<EMAIL_ADDRESS>"
-DPDK_DIR=$PWD/dpdk
-OVS_DIR=$PWD/ovs
-LOG_FILE=$PWD/ci_run.log
+
+WORK_DIR=/root/ovs_dp_test
+DPDK_DIR=$WORK_DIR/dpdk
+OVS_DIR=$WORK_DIR/ovs
+LOG_FILE=$WORK_DIR/ci_run.log
 
 set -e
 
 # What to do on error...
 on_error() {
-echo "***** Send email with failure"
-(echo -e "Subject: FAILED ARM64 OVS datapath run.\n\n" && \
-  tail -n 50 "$LOG_FILE") | \
-  msmtp --host=$SMTP -f $EMAIL $EMAIL
+  echo "***** Send email with failure"
+  (echo -e "Subject: FAILED ARM64 OVS datapath run.\n\n" && \
+    tail -n 50 "$LOG_FILE") | \
+    msmtp --host=$SMTP -f $EMAIL $EMAIL
+  popd
 }
 trap 'on_error' ERR
 
+
+# Execute in $WORK_DIR
+pushd "$WORK_DIR"
 
 # Make sure all STDIO and STDERR go to a single file
 exec > "$LOG_FILE" 2>&1
@@ -80,3 +86,6 @@ echo "***** Send email with results"
 (echo -e "Subject: Successful ARM64 OVS datapath run.\n\n" && \
   tail -n 10 "$LOG_FILE") | \
   msmtp --host=$SMTP -f $EMAIL $EMAIL
+
+
+popd
