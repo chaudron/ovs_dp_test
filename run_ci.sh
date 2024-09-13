@@ -70,7 +70,9 @@ python3 -m pip install --ignore-installed rich
 
 
 echo "***** Kill the existing VM"
+virsh destroy ovs_dp_test_fedora || true
 virsh undefine --nvram ovs_dp_test_fedora || true
+vagrant destroy -f || true
 vagrant destroy -f || true
 
 

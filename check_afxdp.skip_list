@@ -1,6 +1,7 @@
 # Skipped due to test/feature not being available in the af_xdp datapath
 datapath - ping between two ports on cvlan
 datapath - ping6 between two ports on cvlan
+datapath - tcp over vxlan tunnel with software fallback
 conntrack - multiple namespaces, internal ports
 conntrack - IPv4 fragmentation + cvlan
 conntrack - IPv6 fragmentation + cvlan
