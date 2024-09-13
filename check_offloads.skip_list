@@ -33,6 +33,9 @@ datapath - ping6 over srv6 tunnel
 datapath - truncate and output to gre tunnel
 datapath - truncate and output to gre tunnel by simulated packets
 
+# Skipped due to missing CHECK_SYSTEM_TSO
+datapath - tcp over vxlan tunnel with software fallback
+
 # Skipped as it needs a minimal 6.7 kernel
 conntrack - ICMP related with SNAT
 

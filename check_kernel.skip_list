@@ -9,6 +9,9 @@ datapath - ping6 over srv6 tunnel
 # Skipped as it needs a minimal 6.7 kernel
 conntrack - ICMP related with SNAT
 
+# Skipped due to missing CHECK_SYSTEM_TSO
+datapath - tcp over vxlan tunnel with software fallback
+
 # [NEEDS FIXING] Skipped as it needs the latest kernel.
 datapath - drop action
 
