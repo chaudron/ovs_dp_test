@@ -59,6 +59,9 @@ conntrack - fragment reassembly with L3 L4 protocol information
 # Skipped as it needs a minimal 6.7 kernel
 conntrack - ICMP related with SNAT
 
+# Skipped due to missing CHECK_SYSTEM_TSO
+datapath - tcp over vxlan tunnel with software fallback
+
 # Skipped for now, as we do not have a kernel with psample support yet.
 psample - sanity check
 psample - sanity check IPv6
