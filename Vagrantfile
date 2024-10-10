@@ -13,15 +13,21 @@ VM_CPUS = ENV["VM_CPUS"] || 4
 VM_NAME = ENV["VM_NAME"] || VM_TYPE
 
 $provision_fedora = <<END
+
+  growpart /dev/vda 4
+  btrfs filesystem resize max /
+
   dnf -y update
   dnf -y install \
     autoconf \
     automake \
     clang \
     dpdk \
+    ethtool \
     gcc \
     git \
     iproute-tc \
+    iptables \
     lftp \
     libatomic \
     libbpf-devel \
@@ -34,6 +40,7 @@ $provision_fedora = <<END
     libxdp \
     libxdp-devel \
     meson \
+    net-tools \
     ninja-build \
     nmap-ncat \
     numactl-devel \
@@ -47,8 +54,10 @@ $provision_fedora = <<END
     python3-scapy \
     python3-sphinx \
     python3-tftpy \
+    systemtap-sdt-devel \
     tcpdump \
-    unbound-devel
+    unbound-devel \
+    wget
 
   pip install \
      pyftpdlib
@@ -246,11 +255,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :libvirt do |libvirt|
     libvirt.cpus = VM_CPUS
     libvirt.memory = 4096
-  end
-
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = 4096
-    vb.cpus = VM_CPUS
+    libvirt.machine_virtual_size = 40
   end
 
   config.vm.synced_folder "./dpdk", "/vagrant/dpdk", type: "sshfs"
@@ -268,7 +273,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ovs_vm.vm.box = "generic/ubuntu2204"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_ubuntu, env: {"RESULT_DIR" => VM_NAME}
     else
-      ovs_vm.vm.box = "generic/fedora39"
+      ovs_vm.vm.box = "fedora/40-cloud-base"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_fedora, env: {"RESULT_DIR" => VM_NAME}
     end
 
