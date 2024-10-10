@@ -1,0 +1,2 @@
+We need to build the custom kernel for this versions, or else the respective
+kernel test will fail.

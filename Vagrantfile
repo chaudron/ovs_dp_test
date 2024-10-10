@@ -64,7 +64,9 @@ $provision_fedora = <<END
 
   mkdir -p /vagrant/results/$RESULT_DIR
 
-  rpm -U --replacepkgs --nodeps --oldpackage /vagrant/rpms/*.rpm
+  if ls /vagrant/rpms/*.rpm &> /dev/null; then
+      rpm -U --replacepkgs --nodeps --oldpackage /vagrant/rpms/*.rpm
+  fi
 END
 
 $provision_ubuntu = <<END
@@ -141,6 +143,10 @@ END
 $build_ovs = <<END
   export DPDK_BUILD=~/dpdk_build/
   cd /vagrant/ovs
+
+  # FIX VLOG() truncation issue for DPDK.
+  sed -i 's| setbuf(log_stream, NULL);| //setbuf(log_stream, NULL);|' lib/dpdk.c
+
   ./boot.sh
   [ -f Makefile ] && ./configure && make distclean
   rm -rf ~/ovs_build
@@ -262,7 +268,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ovs_vm.vm.box = "generic/ubuntu2204"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_ubuntu, env: {"RESULT_DIR" => VM_NAME}
     else
-      ovs_vm.vm.box = "generic/fedora37"
+      ovs_vm.vm.box = "generic/fedora39"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_fedora, env: {"RESULT_DIR" => VM_NAME}
     end
 
