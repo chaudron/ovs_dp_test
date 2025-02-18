@@ -273,7 +273,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ovs_vm.vm.box = "generic/ubuntu2204"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_ubuntu, env: {"RESULT_DIR" => VM_NAME}
     else
-      ovs_vm.vm.box = "fedora/40-cloud-base"
+      ovs_vm.vm.box = "fedora/41-cloud-base"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_fedora, env: {"RESULT_DIR" => VM_NAME}
     end
 
