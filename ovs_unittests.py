@@ -209,7 +209,7 @@ def vagrant_provision(console=None, target=None, vm_type=None,
 
     with subprocess.Popen(arguments, stdout=subprocess.PIPE,
                           stderr=subprocess.STDOUT, env=env,
-                          encoding='utf8') as process:
+                          encoding='utf8', errors="ignore") as process:
 
         if console:
             if provision is not None:
