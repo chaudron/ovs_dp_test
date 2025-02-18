@@ -36,6 +36,7 @@ conntrack - ICMP related with SNAT
 
 # Skipped due to missing CHECK_SYSTEM_TSO
 datapath - tcp over vxlan tunnel with software fallback
+datapath - tcp over gre tunnel with software fallback
 
 # Skipped for now, as we do not have a kernel with psample support yet.
 psample - sanity check

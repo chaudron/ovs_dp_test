@@ -38,6 +38,7 @@ conntrack - ICMP related with SNAT
 
 # Skipped due to missing CHECK_SYSTEM_TSO
 datapath - tcp over vxlan tunnel with software fallback
+datapath - tcp over gre tunnel with software fallback
 
 # [NEEDS FIXING] Skipped as it needs the latest kernel.
 offloads - re-probe drop action
