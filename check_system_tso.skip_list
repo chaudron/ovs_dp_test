@@ -39,11 +39,9 @@ datapath - bridging two geneve tunnels
 datapath - configure cache size
 datapath - truncate and output to gre tunnel
 datapath - truncate and output to gre tunnel by simulated packets
-
-# Skipped as it needs a minimal 6.7 kernel
 conntrack - ICMP related with SNAT
 
-# Skipped for now, as we do not have a kernel with psample support yet.
+# Skipped due to missing OVS_CHECK_PSAMPLE(), i.e. DP is missing psample support
 psample - sanity check
 psample - sanity check IPv6
 psample - slow

@@ -26,6 +26,7 @@ datapath - ping over ip6erspan v2 tunnel by simulated packets
 datapath - truncate and output to gre tunnel by simulated packets
 datapath - truncate and output to gre tunnel
 datapath - configure cache size
+conntrack - ICMP related with SNAT
 
 # Valid skipped due to CHECK_CONNTRACK_LOCAL_STACK() macro
 conntrack - can match and clear ct_state from outside OVS
@@ -56,14 +57,11 @@ conntrack - multi-stage pipeline, local
 # Valid skipped due to CHECK_L3L4_CONNTRACK_REASM() macro
 conntrack - fragment reassembly with L3 L4 protocol information
 
-# Skipped as it needs a minimal 6.7 kernel
-conntrack - ICMP related with SNAT
-
-# Skipped due to missing CHECK_SYSTEM_TSO
+# Skipped due to missing CHECK_SYSTEM_TSO()
 datapath - tcp over vxlan tunnel with software fallback
 datapath - tcp over gre tunnel with software fallback
 
-# Skipped for now, as we do not have a kernel with psample support yet.
+# Skipped due to missing OVS_CHECK_PSAMPLE(), i.e. DP is missing psample support
 psample - sanity check
 psample - sanity check IPv6
 psample - slow
