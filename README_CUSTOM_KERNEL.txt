@@ -50,8 +50,8 @@ dnf install -y \
   KV=$(uname -r | sed -ne 's/\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/p')
   BD=~/rpmbuild/BUILD/kernel-$KV-build/kernel-$KV/linux-*/
 
-  sed -i 's/# CONFIG_NF_CONNTRACK_TIMEOUT is not set/CONFIG_NF_CONNTRACK_TIMEOUT=y/' $BD/configs/kernel-$KV-x86_64.config
-  sed -i 's/CONFIG_NF_CT_NETLINK=m/CONFIG_NF_CT_NETLINK=m\nCONFIG_NF_CT_NETLINK_TIMEOUT=m/' $BD/configs/kernel-$KV-x86_64.config
+  sed -i 's/# CONFIG_NF_CONNTRACK_TIMEOUT is not set/CONFIG_NF_CONNTRACK_TIMEOUT=y/' $BD/configs/kernel-$KV-$(uname -m).config
+  sed -i 's/CONFIG_NF_CT_NETLINK=m/CONFIG_NF_CT_NETLINK=m\nCONFIG_NF_CT_NETLINK_TIMEOUT=m/' $BD/configs/kernel-$KV-$(uname -m).config
 
 
 # Build the new RPMs (in multiple steps, else it will overwrite our changed
