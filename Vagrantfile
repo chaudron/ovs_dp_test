@@ -266,6 +266,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     libvirt.machine_type = "virt"
     libvirt.loader = "/usr/share/AAVMF/AAVMF_CODE.fd"
     libvirt.nvram = ""
+    libvirt.cpus = VM_CPUS
+    libvirt.memory = 4096
     libvirt.machine_virtual_size = 40
 
     libvirt.input :type => "mouse", :bus => "usb"
