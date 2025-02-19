@@ -14,7 +14,8 @@ VM_NAME = ENV["VM_NAME"] || VM_TYPE
 
 $provision_fedora = <<END
 
-  growpart /dev/vda 4
+  growpart $(df --output=source / | tail -1 | sed -E 's/([0-9]+)$//') \
+           $(df --output=source / | tail -1 | grep -oE '[0-9]+$')
   btrfs filesystem resize max /
 
   dnf -y update
