@@ -77,8 +77,8 @@ $provision_fedora = <<END
 
   mkdir -p /vagrant/results/$RESULT_DIR
 
-  if ls /vagrant/rpms/*.rpm &> /dev/null; then
-      rpm -U --replacepkgs --nodeps --oldpackage /vagrant/rpms/*.rpm
+  if ls /vagrant/rpms/*.$(uname -m).rpm &> /dev/null; then
+      rpm -U --replacepkgs --nodeps --oldpackage /vagrant/rpms/*.$(uname -m).rpm
   fi
 END
 
