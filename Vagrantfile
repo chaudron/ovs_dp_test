@@ -154,6 +154,9 @@ $build_ovs = <<END
   export DPDK_BUILD=~/dpdk_build/
   cd /vagrant/ovs
 
+  # FIX log message from libbpf, comming from xdplib probes.
+  sed -i 's|$1";/netdev_linux.*obtaining netdev stats via vport failed/d|$1";/libbpf:/d\\n/netdev_linux.*obtaining netdev stats via vport failed/d|' tests/system-userspace-macros.at
+
   ./boot.sh
   [ -f Makefile ] && ./configure && make distclean
   rm -rf ~/ovs_build
@@ -233,7 +236,7 @@ END
 
 $test_check_afxdp = <<END
   cd ~/ovs_build
-  export ASAN_OPTIONS='detect_leaks=1:abort_on_error=true:log_path=asan'  
+  export ASAN_OPTIONS='detect_leaks=1:abort_on_error=true:log_path=asan'
   make check-afxdp
   cp tests/system-afxdp-testsuite.log /vagrant/results/$RESULT_DIR
 END
