@@ -58,6 +58,7 @@ $provision_fedora = <<END
     systemtap-sdt-devel \
     tcpdump \
     unbound-devel \
+    which \
     wget
 
   pip install \
@@ -155,7 +156,7 @@ $build_ovs = <<END
   cd /vagrant/ovs
 
   # FIX log message from libbpf, comming from xdplib probes.
-  sed -i 's|$1";/netdev_linux.*obtaining netdev stats via vport failed/d|$1";/libbpf:/d\\n/netdev_linux.*obtaining netdev stats via vport failed/d|' tests/system-userspace-macros.at
+  sed -i 's|$1";/netdev_linux.*obtaining netdev stats via vport failed/d|$1";/libbpf:/d\\n/netd\ev_linux.*obtaining netdev stats via vport failed/d|' tests/system-userspace-macros.at
 
   ./boot.sh
   [ -f Makefile ] && ./configure && make distclean
