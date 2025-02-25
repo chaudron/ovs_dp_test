@@ -1,21 +1,25 @@
-check-dpdk:
-===========
- * It looks like we are missing the 'vhost: fix FD entries cleanup' patch for
-   DPDK 24.11.1, causing the 'vhost: fix FD entries cleanup' test to fail.
-   The following is present in the log causing the failure:
-     'VHOST_FDMAN: could not remove 439 fd from 52 epfd: No such file or directory'
+check:
+======
+ * Due to an issue in DPDK a large amount of additional memory
+   is allocated for processed linked with DPDK, the 'monitor-cond-change with
+   many sessions pending' test is failing. The following serie fixes the issue:
+    * 17c59ba22a eal/x86: defer power intrinsics variable allocation
+    * 5803893830 power: defer lcore variable allocation
+    * e07b9b8acd random: defer seeding to EAL init
 
-  * Lots of failures due to known issue in the Fedora 4.1 kernel's XDPTools
-    package. This is reported/fixed here;
-      - https://github.com/xdp-project/xdp-tools/pull/477
-
+check-kernel:
+=============
+ * Due to the instability of Libreswan v4 the 'IPsec -- Libreswan NxN geneve
+   tunnels + reconciliation' test is skipped.
 
 check-offloads:
 ===============
  * With Fedora 39~41 the following test is failing and needs research:
-    '163. conntrack - ICMP related with SNAT (system-traffic.at:7529)'
+     '163. conntrack - ICMP related with SNAT (system-traffic.at:7529)'
+   For this a patch was sent:
+     https://patchwork.ozlabs.org/project/openvswitch/list/?series=445882
 
-check_afxdp:
+check-afxdp:
 ============
  * The latest libxdp does some probing, which results in libbpf
    warnings being present in the OVS logs. For now we wave all
