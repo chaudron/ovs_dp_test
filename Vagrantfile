@@ -12,6 +12,9 @@ VM_TYPE = ENV["VM_TYPE"] || "fedora"
 VM_CPUS = ENV["VM_CPUS"] || 4
 VM_NAME = ENV["VM_NAME"] || VM_TYPE
 
+HOST_ARCH = `uname -m`.strip
+IS_ARM64 = HOST_ARCH == "aarch64"
+
 $provision_fedora = <<END
 
   growpart $(df --output=source / | tail -1 | sed -E 's/([0-9]+)$//') \
@@ -105,7 +108,6 @@ $provision_ubuntu = <<END
     libjemalloc2 \
     libnuma-dev \
     libpcap-dev \
-    libreswan \
     libssl-dev \
     libtool \
     libunbound-dev \
@@ -166,7 +168,7 @@ $build_ovs = <<END
   mkdir -p ~/ovs_build
   cd ~/ovs_build
   PKG_CONFIG_PATH=$DPDK_BUILD/install/lib64/pkgconfig:$DPDK_BUILD/install/lib/x86_64-linux-gnu/pkgconfig \
-  CFLAGS="-g -O2 $EXTRA_CFLAGS" \
+  CFLAGS="-g -O2 #{IS_ARM64 ? '' : '-msse4.2 -mpopcnt'} $EXTRA_CFLAGS" \
     /vagrant/ovs/configure \
       --enable-afxdp \
       --enable-Werror \
@@ -257,19 +259,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Provider specific configuration
   #
   config.vm.provider :libvirt do |libvirt|
-    # ARM specific additions
-    libvirt.cpu_mode = "host-passthrough"
-    libvirt.machine_arch = "aarch64"
-    libvirt.machine_type = "virt"
-    libvirt.loader = "/usr/share/AAVMF/AAVMF_CODE.fd"
-    libvirt.nvram = ""
+    if IS_ARM64
+      # ARM64 specific additions
+      libvirt.cpu_mode = "host-passthrough"
+      libvirt.machine_arch = "aarch64"
+      libvirt.machine_type = "virt"
+      libvirt.loader = "/usr/share/AAVMF/AAVMF_CODE.fd"
+      libvirt.nvram = ""
+
+      libvirt.input :type => "mouse", :bus => "usb"
+      libvirt.input :type => "keyboard", :bus => "usb"
+      libvirt.usb_controller :model => "qemu-xhci"
+    end
+
     libvirt.cpus = VM_CPUS
     libvirt.memory = 4096
     libvirt.machine_virtual_size = 40
-
-    libvirt.input :type => "mouse", :bus => "usb"
-    libvirt.input :type => "keyboard", :bus => "usb"
-    libvirt.usb_controller :model => "qemu-xhci"
   end
 
   config.vm.synced_folder "./dpdk", "/vagrant/dpdk", type: "sshfs"
@@ -287,8 +292,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ovs_vm.vm.box = "generic/ubuntu2204"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_ubuntu, env: {"RESULT_DIR" => VM_NAME}
     else
-      ovs_vm.vm.box = "fedora/41-cloud-base"
-      ovs_vm.vm.box_url = "https://dl.fedoraproject.org/pub/fedora/linux/releases/41/Cloud/aarch64/images/Fedora-Cloud-Base-Vagrant-libvirt-41-1.4.aarch64.vagrant.libvirt.box"
+      ovs_vm.vm.box = "fedora/44-cloud-base"
+      if IS_ARM64
+        ovs_vm.vm.box_url = "https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Cloud/aarch64/images/Fedora-Cloud-Base-Vagrant-libvirt-44-1.7.aarch64.vagrant.libvirt.box"
+      else
+        ovs_vm.vm.box_url = "https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt-44-1.7.x86_64.vagrant.libvirt.box"
+      end
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_fedora, env: {"RESULT_DIR" => VM_NAME}
     end
 

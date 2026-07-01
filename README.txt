@@ -16,7 +16,7 @@ in the root of this directory. For example do the following to checkout the
 latest OVS + DPDK:
 
   $ git clone https://github.com/openvswitch/ovs.git
-  $ git clone --branch v22.11.3 http://dpdk.org/git/dpdk-stable dpdk
+  $ git clone --branch v25.11.2 http://dpdk.org/git/dpdk-stable dpdk
 
 Make sure vagrant is working on your system, and has the 'reload' and 'sshfs'
 plugin installed (see the Vagrantfile for details). In addition  make sure the
