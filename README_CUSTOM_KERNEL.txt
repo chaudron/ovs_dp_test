@@ -1,4 +1,9 @@
 #
+# !! Looks like this is not longer needed for Fedora 44, as its included
+# !! by default.
+#
+
+#
 # Do the following to build the custom kernel with CONFIG_NF_CONNTRACK_TIMEOUT
 # and CONFIG_NF_CT_NETLINK_TIMEOUT enabled.
 #

@@ -39,3 +39,6 @@ datapath - tcp over gre tunnel with software fallback
 
 # Skipped due to missing OVS_CHECK_DROP_ACTION() for TC offload
 datapath - drop action
+
+# Skipped via CHECK_CONNTRACK_SNAT_ICMP_ID - kernel lacks userspace conntrack SNAT ICMP-id fix
+conntrack - SNAT with icmp_id

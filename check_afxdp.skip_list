@@ -1,7 +1,6 @@
 # Skipped due to test/feature not being available in the af_xdp datapath
 datapath - ping between two ports on cvlan
 datapath - ping6 between two ports on cvlan
-datapath - tcp over vxlan tunnel with software fallback
 conntrack - multiple namespaces, internal ports
 conntrack - IPv4 fragmentation + cvlan
 conntrack - IPv6 fragmentation + cvlan
@@ -16,20 +15,15 @@ conntrack - multi-stage pipeline, local
 802.1ad - 802.1q tunnel
 802.1ad - double vlan match
 
-# Valid skippes due to OVS_CHECK_KERNEL_EXCL and OVS_CHECK_MIN_KERNEL MACROs
-datapath - ping over gre tunnel
-datapath - ping over ip6gre L2 tunnel
+# Valid skipped due to OVS_CHECK_KERNEL_EXCL and OVS_CHECK_MIN_KERNEL MACROs
 datapath - ping over erspan v1 tunnel
 datapath - ping over erspan v2 tunnel
 datapath - ping over ip6erspan v1 tunnel
 datapath - ping over ip6erspan v2 tunnel
-datapath - ping over gre tunnel by simulated packets
 datapath - ping over erspan v1 tunnel by simulated packets
 datapath - ping over erspan v2 tunnel by simulated packets
 datapath - ping over ip6erspan v1 tunnel by simulated packets
 datapath - ping over ip6erspan v2 tunnel by simulated packets
-datapath - truncate and output to gre tunnel by simulated packets
-datapath - truncate and output to gre tunnel
 datapath - configure cache size
 conntrack - ICMP related with SNAT
 
@@ -39,6 +33,9 @@ conntrack - can match and clear ct_state from outside OVS
 # Skipped due to missing CHECK_SYSTEM_TSO
 datapath - tcp over vxlan tunnel with software fallback
 datapath - tcp over gre tunnel with software fallback
+
+# Skipped due to OVS_CHECK_MIN_KERNEL being unconditional in userspace datapaths
+meters - datapath probe
 
 # Skipped due to missing OVS_CHECK_PSAMPLE(), i.e. DP is missing psample support
 psample - sanity check

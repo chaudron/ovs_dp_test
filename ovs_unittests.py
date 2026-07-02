@@ -54,12 +54,15 @@
 #
 import argparse
 import os
+import platform
 import re
 import subprocess
 import sys
 
 from operator import itemgetter
 from rich.console import Console
+
+HOST_ARCH = platform.machine()
 
 #
 # Global defines
@@ -341,9 +344,18 @@ def process_results(file, target=None, skiplist=None):
             return None, None
 
         passed_names = {x[1] for x in passed_list}
+        current_arch = None
         for line in lines:
             line = line.rstrip('\r\n')
             if line.startswith('#') or line == '':
+                continue
+
+            arch_match = re.match(r'^\[ARCH:\s*(\S+)\]$', line)
+            if arch_match:
+                current_arch = arch_match.group(1)
+                continue
+
+            if current_arch is not None and current_arch != HOST_ARCH:
                 continue
 
             skipped_list[:] = (x for x in skipped_list if x[1] != line)
@@ -388,7 +400,8 @@ def run_single_test(console, options, provision_list, skiplist_file, test_log):
                                      env={"TESTSUITEFLAGS": testsuiteflags}):
                 return "[bold red]ERROR[/]: Failed make check!"
 
-        error_list, tmp_skipped_list, tmp_stale_list, tmp_missing_list = process_results(
+        (error_list, tmp_skipped_list,
+         tmp_stale_list, tmp_missing_list) = process_results(
             test_log, target=options.vagrant_vm_name, skiplist=skiplist_file)
 
         if error_list is None and tmp_skipped_list is None:

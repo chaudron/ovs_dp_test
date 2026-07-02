@@ -7,26 +7,23 @@ OVS-DPDK - MTU decrease phy port
 OVS-DPDK - MTU upper bound phy port
 OVS-DPDK - MTU lower bound phy port
 
-# Skiped if AVX512 support is missing.
-OVS-DPDK - MFEX Autovalidator
-OVS-DPDK - MFEX Autovalidator Fuzzy
-
-# Valid skippes due to OVS_CHECK_KERNEL_EXCL and OVS_CHECK_MIN_KERNEL MACROs
-datapath - ping over gre tunnel
-datapath - ping over ip6gre L2 tunnel
+# Valid skipped due to OVS_CHECK_KERNEL_EXCL and OVS_CHECK_MIN_KERNEL MACROs
 datapath - ping over erspan v1 tunnel
 datapath - ping over erspan v2 tunnel
 datapath - ping over ip6erspan v1 tunnel
 datapath - ping over ip6erspan v2 tunnel
-datapath - ping over gre tunnel by simulated packets
 datapath - ping over erspan v1 tunnel by simulated packets
 datapath - ping over erspan v2 tunnel by simulated packets
 datapath - ping over ip6erspan v1 tunnel by simulated packets
 datapath - ping over ip6erspan v2 tunnel by simulated packets
-datapath - truncate and output to gre tunnel by simulated packets
-datapath - truncate and output to gre tunnel
 datapath - configure cache size
 conntrack - ICMP related with SNAT
+
+# Skipped due to OVS_CHECK_MIN_KERNEL being unconditional in userspace datapaths
+meters - datapath probe
+
+# Skipped due to requiring >= 8 CPU cores in the VM
+OVS-DPDK - dpdk-lcore-mask conversion - non-contig
 
 # Valid skipped due to CHECK_CONNTRACK_LOCAL_STACK() macro
 conntrack - can match and clear ct_state from outside OVS

@@ -27,6 +27,7 @@ $provision_fedora = <<END
     automake \
     clang \
     dpdk \
+    enchant2 \
     ethtool \
     gcc \
     git \
@@ -38,6 +39,7 @@ $provision_fedora = <<END
     libpcap-devel \
     libcap-ng \
     libcap-ng-devel \
+    libreswan \
     libtool \
     libibverbs-devel \
     libxdp \
@@ -63,10 +65,8 @@ $provision_fedora = <<END
     which \
     wget
 
-#  Removed libreswan for now as IPSec tests are crashing the ARM kernel.
-#    libreswan \
-
   pip install \
+     pyenchant \
      pyftpdlib
 
   sysctl net.ipv6.conf.all.disable_ipv6=0
@@ -74,6 +74,11 @@ $provision_fedora = <<END
 
   sed -i 's/net.ipv6.conf.all.disable_ipv6 = 1/net.ipv6.conf.all.disable_ipv6 = 0/g' /etc/sysctl.conf
   echo 'vm.nr_hugepages = 1024' >> /etc/sysctl.conf
+
+  # Lower rmem_max to below 1MB so OVS flow monitoring pause/resume tests
+  # do not skip due to the Fedora 44 default of 4MB being too large.
+  sysctl net.core.rmem_max=212992
+  echo 'net.core.rmem_max = 212992' >> /etc/sysctl.conf
 
   systemctl disable firewalld
   systemctl stop firewalld
@@ -171,8 +176,8 @@ $build_ovs = <<END
   CFLAGS="-g -O2 #{IS_ARM64 ? '' : '-msse4.2 -mpopcnt'} $EXTRA_CFLAGS" \
     /vagrant/ovs/configure \
       --enable-afxdp \
-      --enable-Werror \
       --enable-usdt-probes \
+      --enable-Werror \
       --localstatedir=/var \
       --prefix=/usr \
       --sysconfdir=/etc \
