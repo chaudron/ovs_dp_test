@@ -13,3 +13,19 @@ datapath - tcp over gre tunnel with software fallback
 # Skipped via CHECK_CONNTRACK_SNAT_ICMP_ID - kernel lacks userspace conntrack SNAT ICMP-id fix
 conntrack - SNAT with icmp_id
 
+[ARCH: aarch64]
+# IPsec crashes the ARM kernel.
+IPsec -- Libreswan (ipv4, geneve, defaultroute, psk)
+IPsec -- Libreswan (ipv4, geneve, localip, psk)
+IPsec -- Libreswan (ipv4, geneve, defaultroute, self-signed)
+IPsec -- Libreswan (ipv4, geneve, defaultroute, ca-signed)
+IPsec -- Libreswan (ipv4, gre, defaultroute, psk)
+IPsec -- Libreswan (ipv4, vxlan, defaultroute, psk)
+IPsec -- Libreswan (ipv6, vxlan, defaultroute, psk)
+IPsec -- Libreswan (ipv6, vxlan, localip, psk)
+IPsec -- Libreswan (ipv6, geneve, defaultroute, psk)
+IPsec -- Libreswan (ipv4, geneve, custom conf)
+IPsec -- Libreswan (ipv4, geneve, default crypto)
+IPsec -- Libreswan (ipv4, geneve, custom conf, default crypto)
+IPsec -- Libreswan NxN geneve tunnels + reconciliation
+

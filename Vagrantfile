@@ -39,7 +39,6 @@ $provision_fedora = <<END
     libpcap-devel \
     libcap-ng \
     libcap-ng-devel \
-    libreswan \
     libtool \
     libibverbs-devel \
     libxdp \
@@ -64,6 +63,13 @@ $provision_fedora = <<END
     unbound-devel \
     which \
     wget
+
+#  Removed libreswan on ARM64 as IPSec tests are crashing the ARM kernel.
+#    libreswan \
+
+  if [ "$(uname -m)" = "x86_64" ]; then
+    dnf -y install libreswan
+  fi
 
   pip install \
      pyenchant \
