@@ -479,7 +479,7 @@ def run_single_test(console, options, provision_list, skiplist_file, test_log):
 def run_afxdp(console, options):
     '''Run afxdp test cases'''
     return run_single_test(console, options, ["Test: check-afxdp"],
-                           "check_afxdp.skip_list",
+                           "skip_lists/check_afxdp.skip_list",
                            "system-afxdp-testsuite.log")
 
 
@@ -489,7 +489,7 @@ def run_afxdp(console, options):
 def run_check(console, options):
     '''Run check test cases'''
     return run_single_test(console, options, ["Test: check"],
-                           "check.skip_list", "testsuite.log")
+                           "skip_lists/check.skip_list", "testsuite.log")
 
 
 #
@@ -498,7 +498,7 @@ def run_check(console, options):
 def run_dpdk(console, options):
     '''Run dpdk test cases'''
     return run_single_test(console, options, ["Test: check-dpdk"],
-                           "check_dpdk.skip_list",
+                           "skip_lists/check_dpdk.skip_list",
                            "system-dpdk-testsuite.log")
 
 
@@ -508,7 +508,7 @@ def run_dpdk(console, options):
 def run_kernel(console, options):
     '''Run kernel test cases'''
     return run_single_test(console, options, ["Test: check-kernel"],
-                           "check_kernel.skip_list",
+                           "skip_lists/check_kernel.skip_list",
                            "system-kmod-testsuite.log")
 
 
@@ -518,7 +518,7 @@ def run_kernel(console, options):
 def run_offloads(console, options):
     '''Run TC offload test cases'''
     return run_single_test(console, options, ["Test: check-offloads"],
-                           "check_offloads.skip_list",
+                           "skip_lists/check_offloads.skip_list",
                            "system-offloads-testsuite.log")
 
 
@@ -528,7 +528,7 @@ def run_offloads(console, options):
 def run_ovsdb(console, options):
     '''Run ovsdb cluster test cases'''
     return run_single_test(console, options, ["Test: check-ovsdb-cluster"],
-                           "check_ovsdb_cluster.skip_list",
+                           "skip_lists/check_ovsdb_cluster.skip_list",
                            "ovsdb-cluster-testsuite.log")
 
 
@@ -538,7 +538,7 @@ def run_ovsdb(console, options):
 def run_tso(console, options):
     '''Run system TSO test cases'''
     return run_single_test(console, options, ["Test: check-system-tso"],
-                           "check_system_tso.skip_list",
+                           "skip_lists/check_system_tso.skip_list",
                            "system-tso-testsuite.log")
 
 
@@ -548,7 +548,7 @@ def run_tso(console, options):
 def run_userspace(console, options):
     '''Run userspace test cases'''
     return run_single_test(console, options, ["Test: check-system-userspace"],
-                           "check_system_userspace.skip_list",
+                           "skip_lists/check_system_userspace.skip_list",
                            "system-userspace-testsuite.log")
 
 
