@@ -1,0 +1,46 @@
+# Skipped due to test/feature not being available in the userspace datapath
+datapath - ping between two ports on cvlan
+datapath - ping6 between two ports on cvlan
+conntrack - multiple namespaces, internal ports
+conntrack - Fragmentation over vxlan
+conntrack - IPv6 Fragmentation over vxlan
+conntrack - fragment reassembly with L3 L4 protocol information
+conntrack - multiple zones, local
+conntrack - multi-stage pipeline, local
+interface - datapath port rename
+interface - datapath ports garbage collection
+
+# Valid skipped due to OVS_CHECK_KERNEL_EXCL and OVS_CHECK_MIN_KERNEL MACROs
+datapath - ping over erspan v1 tunnel
+datapath - ping over erspan v2 tunnel
+datapath - ping over ip6erspan v1 tunnel
+datapath - ping over ip6erspan v2 tunnel
+datapath - ping over erspan v1 tunnel by simulated packets
+datapath - ping over erspan v2 tunnel by simulated packets
+datapath - ping over ip6erspan v1 tunnel by simulated packets
+datapath - ping over ip6erspan v2 tunnel by simulated packets
+datapath - configure cache size
+layer3 - ping over MPLS Bareudp
+layer3 - ping over Bareudp
+conntrack - ICMP related with SNAT
+
+# Valid skipped due to CHECK_CONNTRACK_LOCAL_STACK() macro
+conntrack - can match and clear ct_state from outside OVS
+
+# Skipped due to missing CHECK_SYSTEM_TSO()
+datapath - tcp over vxlan tunnel with software fallback
+datapath - tcp over gre tunnel with software fallback
+
+# Skipped due to OVS_CHECK_MIN_KERNEL being unconditional in userspace datapaths
+meters - datapath probe
+
+# Skipped as test requires kernel datapath (checks for ovs-system)
+interface - patch port name exceeds IFNAMSIZ on vswitchd restart
+
+# Skipped due to missing OVS_CHECK_PSAMPLE(), i.e. DP is missing psample support
+psample - sanity check
+psample - sanity check IPv6
+psample - slow
+psample - slow with probability
+psample - with IPFIX
+psample - from ct label

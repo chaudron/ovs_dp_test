@@ -12,28 +12,39 @@ VM_TYPE = ENV["VM_TYPE"] || "fedora"
 VM_CPUS = ENV["VM_CPUS"] || 4
 VM_NAME = ENV["VM_NAME"] || VM_TYPE
 
+HOST_ARCH = `uname -m`.strip
+IS_ARM64 = HOST_ARCH == "aarch64"
+
 $provision_fedora = <<END
+
+  growpart $(df --output=source / | tail -1 | sed -E 's/([0-9]+)$//') \
+           $(df --output=source / | tail -1 | grep -oE '[0-9]+$')
+  btrfs filesystem resize max /
+
   dnf -y update
   dnf -y install \
     autoconf \
     automake \
     clang \
     dpdk \
+    enchant2 \
+    ethtool \
     gcc \
     git \
     iproute-tc \
+    iptables \
     lftp \
     libatomic \
     libbpf-devel \
     libpcap-devel \
     libcap-ng \
     libcap-ng-devel \
-    libreswan \
     libtool \
     libibverbs-devel \
     libxdp \
     libxdp-devel \
     meson \
+    net-tools \
     ninja-build \
     nmap-ncat \
     numactl-devel \
@@ -47,10 +58,21 @@ $provision_fedora = <<END
     python3-scapy \
     python3-sphinx \
     python3-tftpy \
+    systemtap-sdt-devel \
     tcpdump \
-    unbound-devel
+    unbound-devel \
+    which \
+    wget
+
+#  Removed libreswan on ARM64 as IPSec tests are crashing the ARM kernel.
+#    libreswan \
+
+  if [ "$(uname -m)" = "x86_64" ]; then
+    dnf -y install libreswan
+  fi
 
   pip install \
+     pyenchant \
      pyftpdlib
 
   sysctl net.ipv6.conf.all.disable_ipv6=0
@@ -59,12 +81,19 @@ $provision_fedora = <<END
   sed -i 's/net.ipv6.conf.all.disable_ipv6 = 1/net.ipv6.conf.all.disable_ipv6 = 0/g' /etc/sysctl.conf
   echo 'vm.nr_hugepages = 1024' >> /etc/sysctl.conf
 
+  # Lower rmem_max to below 1MB so OVS flow monitoring pause/resume tests
+  # do not skip due to the Fedora 44 default of 4MB being too large.
+  sysctl net.core.rmem_max=212992
+  echo 'net.core.rmem_max = 212992' >> /etc/sysctl.conf
+
   systemctl disable firewalld
   systemctl stop firewalld
 
   mkdir -p /vagrant/results/$RESULT_DIR
 
-  rpm -U --replacepkgs --nodeps --oldpackage /vagrant/rpms/*.rpm
+  if ls /vagrant/rpms/*.$(uname -m).rpm &> /dev/null; then
+      rpm -U --replacepkgs --nodeps --oldpackage /vagrant/rpms/*.$(uname -m).rpm
+  fi
 END
 
 $provision_ubuntu = <<END
@@ -90,7 +119,6 @@ $provision_ubuntu = <<END
     libjemalloc2 \
     libnuma-dev \
     libpcap-dev \
-    libreswan \
     libssl-dev \
     libtool \
     libunbound-dev \
@@ -141,17 +169,18 @@ END
 $build_ovs = <<END
   export DPDK_BUILD=~/dpdk_build/
   cd /vagrant/ovs
+
   ./boot.sh
   [ -f Makefile ] && ./configure && make distclean
   rm -rf ~/ovs_build
   mkdir -p ~/ovs_build
   cd ~/ovs_build
   PKG_CONFIG_PATH=$DPDK_BUILD/install/lib64/pkgconfig:$DPDK_BUILD/install/lib/x86_64-linux-gnu/pkgconfig \
-  CFLAGS="-g -O2 -msse4.2 -mpopcnt $EXTRA_CFLAGS" \
+  CFLAGS="-g -O2 #{IS_ARM64 ? '' : '-msse4.2 -mpopcnt'} $EXTRA_CFLAGS" \
     /vagrant/ovs/configure \
       --enable-afxdp \
-      --enable-Werror \
       --enable-usdt-probes \
+      --enable-Werror \
       --localstatedir=/var \
       --prefix=/usr \
       --sysconfdir=/etc \
@@ -220,7 +249,7 @@ END
 
 $test_check_afxdp = <<END
   cd ~/ovs_build
-  export ASAN_OPTIONS='detect_leaks=1:abort_on_error=true:log_path=asan'  
+  export ASAN_OPTIONS='detect_leaks=1:abort_on_error=true:log_path=asan'
   make check-afxdp
   cp tests/system-afxdp-testsuite.log /vagrant/results/$RESULT_DIR
 END
@@ -238,13 +267,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Provider specific configuration
   #
   config.vm.provider :libvirt do |libvirt|
+    if IS_ARM64
+      # ARM64 specific additions
+      libvirt.cpu_mode = "host-passthrough"
+      libvirt.machine_arch = "aarch64"
+      libvirt.machine_type = "virt"
+      libvirt.loader = "/usr/share/AAVMF/AAVMF_CODE.fd"
+      libvirt.nvram = ""
+
+      libvirt.input :type => "mouse", :bus => "usb"
+      libvirt.input :type => "keyboard", :bus => "usb"
+      libvirt.usb_controller :model => "qemu-xhci"
+    end
+
     libvirt.cpus = VM_CPUS
     libvirt.memory = 4096
-  end
-
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = 4096
-    vb.cpus = VM_CPUS
+    libvirt.machine_virtual_size = 40
   end
 
   config.vm.synced_folder "./dpdk", "/vagrant/dpdk", type: "sshfs"
@@ -262,7 +300,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ovs_vm.vm.box = "generic/ubuntu2204"
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_ubuntu, env: {"RESULT_DIR" => VM_NAME}
     else
-      ovs_vm.vm.box = "generic/fedora37"
+      ovs_vm.vm.box = "fedora/44-cloud-base"
+      if IS_ARM64
+        ovs_vm.vm.box_url = "https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Cloud/aarch64/images/Fedora-Cloud-Base-Vagrant-libvirt-44-1.7.aarch64.vagrant.libvirt.box"
+      else
+        ovs_vm.vm.box_url = "https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt-44-1.7.x86_64.vagrant.libvirt.box"
+      end
       ovs_vm.vm.provision "Linux Provisioning", type: "shell", inline: $provision_fedora, env: {"RESULT_DIR" => VM_NAME}
     end
 

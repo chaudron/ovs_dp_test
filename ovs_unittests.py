@@ -54,12 +54,15 @@
 #
 import argparse
 import os
+import platform
 import re
 import subprocess
 import sys
 
 from operator import itemgetter
 from rich.console import Console
+
+HOST_ARCH = platform.machine()
 
 #
 # Global defines
@@ -209,7 +212,7 @@ def vagrant_provision(console=None, target=None, vm_type=None,
 
     with subprocess.Popen(arguments, stdout=subprocess.PIPE,
                           stderr=subprocess.STDOUT, env=env,
-                          encoding='utf8') as process:
+                          encoding='utf8', errors="ignore") as process:
 
         if console:
             if provision is not None:
@@ -270,7 +273,9 @@ def process_results(file, target=None, skiplist=None):
     if target is None:
         raise ValueError("Vagrant target not set!")
 
+    passed_list = []
     skipped_list = []
+    all_test_names = set()
     error_list = []
     parsing_skipped = False
     parsing_errors = False
@@ -304,21 +309,33 @@ def process_results(file, target=None, skiplist=None):
             skip_regex = r'^(\d+)\. (.*) \((.+:\d+)\): skipped .+$'
             match = re.search(skip_regex, line)
             if match is not None and len(match.groups()) == 3:
+                all_test_names.add(match.groups()[1])
                 skipped_list.append([match.groups()[0],
                                      match.groups()[1],
                                      match.groups()[2]])
+
+            pass_regex = r'^(\d+)\. (.*) \((.+:\d+)\): ok'
+            match = re.search(pass_regex, line)
+            if match is not None and len(match.groups()) == 3:
+                all_test_names.add(match.groups()[1])
+                passed_list.append([match.groups()[0],
+                                    match.groups()[1],
+                                    match.groups()[2]])
 
         elif parsing_errors:
             error_regex = r'^ *(\d+): (.+:\d+) (.+)$'
             match = re.search(error_regex, line)
             if match is not None and len(match.groups()) == 3:
+                all_test_names.add(match.groups()[2])
                 error_list.append([match.groups()[0],
                                    match.groups()[2],
                                    match.groups()[1]])
 
     #
-    # Remove valid skipped_list items.
+    # Remove valid skipped_list items, and detect stale and missing entries.
     #
+    stale_list = []
+    missing_list = []
     if skiplist is not None:
         try:
             with open(skiplist, 'r', encoding="utf8") as in_file:
@@ -326,17 +343,31 @@ def process_results(file, target=None, skiplist=None):
         except (FileNotFoundError, PermissionError):
             return None, None
 
+        passed_names = {x[1] for x in passed_list}
+        current_arch = None
         for line in lines:
             line = line.rstrip('\r\n')
-            if line.startswith('#'):
+            if line.startswith('#') or line == '':
+                continue
+
+            arch_match = re.match(r'^\[ARCH:\s*(\S+)\]$', line)
+            if arch_match:
+                current_arch = arch_match.group(1)
+                continue
+
+            if current_arch is not None and current_arch != HOST_ARCH:
                 continue
 
             skipped_list[:] = (x for x in skipped_list if x[1] != line)
+            if line in passed_names:
+                stale_list.append(line)
+            elif line not in all_test_names:
+                missing_list.append(line)
 
     #
-    # Return the two lists
+    # Return the four lists
     #
-    return error_list, skipped_list
+    return error_list, skipped_list, stale_list, missing_list
 
 
 #
@@ -346,6 +377,8 @@ def run_single_test(console, options, provision_list, skiplist_file, test_log):
     '''Run a single test case based on input parameters'''
     current_run = 0
     skipped_list = []
+    stale_list = []
+    missing_list = []
     first_run_errors = []
     vm_type = "ubuntu" if options.ubuntu else None
     testsuiteflags = options.testsuiteflags if options.testsuiteflags else ""
@@ -367,7 +400,8 @@ def run_single_test(console, options, provision_list, skiplist_file, test_log):
                                      env={"TESTSUITEFLAGS": testsuiteflags}):
                 return "[bold red]ERROR[/]: Failed make check!"
 
-        error_list, tmp_skipped_list = process_results(
+        (error_list, tmp_skipped_list,
+         tmp_stale_list, tmp_missing_list) = process_results(
             test_log, target=options.vagrant_vm_name, skiplist=skiplist_file)
 
         if error_list is None and tmp_skipped_list is None:
@@ -385,6 +419,15 @@ def run_single_test(console, options, provision_list, skiplist_file, test_log):
         #
         if len(skipped_list) == 0:
             skipped_list = tmp_skipped_list
+
+        #
+        # Accumulate stale skips across all runs.
+        # Only capture missing skips on the first run, as reruns only contain
+        # a subset of tests (the failed ones), making absences meaningless.
+        #
+        stale_list = list(set(stale_list) | set(tmp_stale_list))
+        if current_run == 1:
+            missing_list = tmp_missing_list
 
         #
         # Break if all tests are successful.
@@ -419,6 +462,14 @@ def run_single_test(console, options, provision_list, skiplist_file, test_log):
             failures += "[bold dark_orange3]  - [SKIPPED] " \
                 f"{int(issue[1]):-4}. {issue[2]} ({issue[3]})[/]\n"
 
+    for name in sorted(stale_list):
+        failures += "[bold yellow]  - [WARNING] " \
+            f"{name} passed but is listed in skip list[/]\n"
+
+    for name in sorted(missing_list):
+        failures += "[bold yellow]  - [WARNING] " \
+            f"{name} is in skip list but was not found in test results[/]\n"
+
     return failures.rstrip('\r\n')
 
 
@@ -428,7 +479,7 @@ def run_single_test(console, options, provision_list, skiplist_file, test_log):
 def run_afxdp(console, options):
     '''Run afxdp test cases'''
     return run_single_test(console, options, ["Test: check-afxdp"],
-                           "check_afxdp.skip_list",
+                           "skip_lists/check_afxdp.skip_list",
                            "system-afxdp-testsuite.log")
 
 
@@ -438,7 +489,7 @@ def run_afxdp(console, options):
 def run_check(console, options):
     '''Run check test cases'''
     return run_single_test(console, options, ["Test: check"],
-                           "check.skip_list", "testsuite.log")
+                           "skip_lists/check.skip_list", "testsuite.log")
 
 
 #
@@ -447,7 +498,7 @@ def run_check(console, options):
 def run_dpdk(console, options):
     '''Run dpdk test cases'''
     return run_single_test(console, options, ["Test: check-dpdk"],
-                           "check_dpdk.skip_list",
+                           "skip_lists/check_dpdk.skip_list",
                            "system-dpdk-testsuite.log")
 
 
@@ -457,7 +508,7 @@ def run_dpdk(console, options):
 def run_kernel(console, options):
     '''Run kernel test cases'''
     return run_single_test(console, options, ["Test: check-kernel"],
-                           "check_kernel.skip_list",
+                           "skip_lists/check_kernel.skip_list",
                            "system-kmod-testsuite.log")
 
 
@@ -467,7 +518,7 @@ def run_kernel(console, options):
 def run_offloads(console, options):
     '''Run TC offload test cases'''
     return run_single_test(console, options, ["Test: check-offloads"],
-                           "check_offloads.skip_list",
+                           "skip_lists/check_offloads.skip_list",
                            "system-offloads-testsuite.log")
 
 
@@ -477,7 +528,7 @@ def run_offloads(console, options):
 def run_ovsdb(console, options):
     '''Run ovsdb cluster test cases'''
     return run_single_test(console, options, ["Test: check-ovsdb-cluster"],
-                           "check_ovsdb_cluster.skip_list",
+                           "skip_lists/check_ovsdb_cluster.skip_list",
                            "ovsdb-cluster-testsuite.log")
 
 
@@ -487,7 +538,7 @@ def run_ovsdb(console, options):
 def run_tso(console, options):
     '''Run system TSO test cases'''
     return run_single_test(console, options, ["Test: check-system-tso"],
-                           "check_system_tso.skip_list",
+                           "skip_lists/check_system_tso.skip_list",
                            "system-tso-testsuite.log")
 
 
@@ -497,7 +548,7 @@ def run_tso(console, options):
 def run_userspace(console, options):
     '''Run userspace test cases'''
     return run_single_test(console, options, ["Test: check-system-userspace"],
-                           "check_system_userspace.skip_list",
+                           "skip_lists/check_system_userspace.skip_list",
                            "system-userspace-testsuite.log")
 
 

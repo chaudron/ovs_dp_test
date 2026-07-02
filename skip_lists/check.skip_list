@@ -1,0 +1,4 @@
+[ARCH: aarch64]
+bfd - bfd decay
+ovsdb-idl - Check Python IDL connects to leader - Python3 (leader only)
+ovsdb-idl - Check Python IDL reconnects to leader - Python3 (leader only)
