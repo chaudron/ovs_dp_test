@@ -164,9 +164,6 @@ $build_ovs = <<END
   export DPDK_BUILD=~/dpdk_build/
   cd /vagrant/ovs
 
-  # FIX log message from libbpf, comming from xdplib probes.
-  sed -i 's|$1";/netdev_linux.*obtaining netdev stats via vport failed/d|$1";/libbpf:/d\\n/netd\ev_linux.*obtaining netdev stats via vport failed/d|' tests/system-userspace-macros.at
-
   ./boot.sh
   [ -f Makefile ] && ./configure && make distclean
   rm -rf ~/ovs_build
