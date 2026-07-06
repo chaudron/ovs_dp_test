@@ -28,4 +28,9 @@ IPsec -- Libreswan (ipv4, geneve, custom conf)
 IPsec -- Libreswan (ipv4, geneve, default crypto)
 IPsec -- Libreswan (ipv4, geneve, custom conf, default crypto)
 IPsec -- Libreswan NxN geneve tunnels + reconciliation
+IPsec -- Libreswan - reconciliation interval is respected - ipv4
+IPsec -- Libreswan - reconciliation interval is respected - ipv6
+IPsec -- Libreswan - established conns survive new additions - ipv4
+IPsec -- Libreswan - established conns survive new additions - ipv6
+IPsec -- Libreswan - certificate update while the daemon is down
 
